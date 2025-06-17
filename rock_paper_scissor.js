@@ -1,5 +1,13 @@
 let humanScore = 0;
 let computerScore = 0;
+let btns = document.querySelectorAll('button');
+let score = document.getElementById('score');
+let user_score = document.getElementById('user');
+let pc_score = document.getElementById('pc');
+btns.forEach((btn) => {
+    btn.addEventListener('click', playRound);
+});
+
 function getComputerChoice(){
     let random = Math.random() * 10;
     if (random <= 3) {
@@ -13,57 +21,48 @@ function getComputerChoice(){
     }
 }
 
-function getHumanChoice(){
-    return prompt("Select: Rock, Paper or Scissor");
-}
-
-function playRound(humanChoice, computerChoice){
+function playRound(event){
+    let humanChoice = event.target.innerText;
+    let computerChoice = getComputerChoice();
     if (humanChoice == computerChoice) {
-        return playRound(getHumanChoice(), getComputerChoice());
+        computerScore += 1;
+        humanScore += 1;
     }
     else if(humanChoice == "Rock"){
         if (computerChoice == "Paper") {
             computerScore += 1;
-            //return "You lose! Paper beats Rock";
         }
         else{
             humanScore += 1;
-            //return "You win! Rock beats Scissor";
         }
     }
     else if(humanChoice == "Paper"){
         if (computerChoice == "Scissor") {
             computerScore += 1;
-            //return "You lose! Scissor beats Paper";
         }
         else{
             humanScore += 1;
-            //return "You win! Paper beats Rock";
         }
     }
     else{
         if (computerChoice == "Rock") {
             computerScore += 1;
-            //return "You lose! Rock beats Scissor";
         }
         else{
             humanScore += 1;
-            //return "You win! Scissor beats Paper";
         }
+    }
+    user_score.textContent = humanScore;
+    pc_score.textContent = computerScore;
+    if(humanScore == 5 || computerScore == 5){
+        let winner = document.createElement('p');
+        winner.textContent = `${humanScore == 5 ? "You win!":"PC win!"}`;
+        score.appendChild(winner);
+        btns.forEach((btn) => {
+            btn.removeEventListener('click', playRound);
+        });
+        humanScore = 0;
+        computerScore = 0;
     }
     return;
 }
-
-function playGame(){
-    for(let i=0; i<5; i++){
-        playRound(getHumanChoice(), getComputerChoice())
-    }
-    if(humanScore > computerScore){
-        return `You win! your score is ${humanScore} and computer score is ${computerScore}`;
-    }
-    else{
-        return `You lose! your score is ${humanScore} and computer score is ${computerScore}`;
-    }
-}
-
-console.log(playGame());
